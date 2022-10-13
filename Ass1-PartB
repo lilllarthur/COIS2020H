@@ -17,12 +17,12 @@ public class MyString
     // Initialize with a header node an instance of MyString to the given character array A (4 marks)
     public MyString(char[] A) 
     {
-        front = new Node(A[0], null); //not really sure ab this
+        front = new Node(A[0], null); 
+        length = A.Length;
         for (int i = 0; i < A.Length; i ++)
         {
-            front.next = new Node(A[i], front.next);
+            front.next = new Node(A[(length -1) - i], front.next);
         }
-        length = A.Length;
     }
     // Using a stack, reverse this instance of MyString (6 marks)
     public void Reverse() { Stack<char> S; … }
