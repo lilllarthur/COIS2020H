@@ -88,14 +88,14 @@ public class MyString
         return true;
     }
     // Print out this instance of MyString (3 marks)
-    public void Print() 
+    public void Print()
     {
-        for (int i = 0; i < length; i ++)
+        Node Lnode = front;
+        while (Lnode != null)
         {
-            Console.Write(this.front.next.item);
-            this.front = this.front.next;
+            Console.Write(Lnode.item);
+            Lnode = Lnode.next;
         }
-        Console.WriteLine();
     }
     public static void Main()
     {
