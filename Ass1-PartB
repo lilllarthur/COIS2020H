@@ -40,17 +40,24 @@ public class MyString
         return -1;
     }
     // Remove all occurrences of c from this instance (4 marks)
-    public void Remove(char c) 
+    public void Remove(char c)
     {
-        for (int i =0; i < length; i ++)
+        if (front == null)
         {
-            if (this.front.next.item == c)
-            {
-                this.front.next = this.front.next.next;
-                length--;
-            }
-            this.front = this.front.next;
+            return;
         }
+        Node curr = front;
+        if (c == 0)
+        {
+            front = curr.next;
+            return;
+        }
+        for (int i=0;curr != null && i < c -1; i++)
+        {
+            return;
+        }
+        Node next = curr.next.next;
+        curr.next = next;
     }
     // Return true if obj is both of type MyString and the same as this instance;
     // otherwise false (6 marks)
