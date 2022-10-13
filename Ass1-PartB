@@ -5,31 +5,31 @@ public class MyString
         public char item;
         public Node next;
         // Constructor (2 marks)
-        public Node(char Item, Node Next) 
+        public Node(char Item)
         {
             item = Item;
-            next = Next;
+            next = null;
         }
     }
     private Node front; // Reference to the first (header) node
     private int length; // Number of characters in MyString
-                        
+
     // Initialize with a header node an instance of MyString to the given character array A (4 marks)
-    public MyString(char[] A) 
+    public MyString(char[] A)
     {
-        front = new Node(A[0], null); 
+        front = new Node(A[0]);
         length = A.Length;
-        for (int i = 0; i < A.Length; i ++)
+        for (int i = 0; i < A.Length; i++)
         {
-            front.next = new Node(A[(length -1) - i], front.next);
+            front.next = new Node(A[(length - 1) - i]);
         }
     }
     // Using a stack, reverse this instance of MyString (6 marks)
-    public void Reverse() { Stack<char> S; … }
+    //public void Reverse() { Stack<char> S; … }
     // Return the index of the first occurrence of c in this instance; otherwise -1 (4 marks)
-    public int IndexOf(char c) 
+    public int IndexOf(char c)
     {
-        for (int i = 0; i < length; i ++)
+        for (int i = 0; i < length; i++)
         {
             if (this.front.next.item == c)
             {
@@ -58,10 +58,18 @@ public class MyString
         }
         Node next = curr.next.next;
         curr.next = next;
+        /*for (int i = 0; i < length; i++)
+        {
+            if (this.front.next.item == c)
+            {
+                this.front.next = this.front.next.next;
+                length--;
+            }
+        }*/
     }
     // Return true if obj is both of type MyString and the same as this instance;
     // otherwise false (6 marks)
-    public override bool Equals(object obj) 
+    public override bool Equals(object obj)
     {
         if (this.GetType() != obj.GetType())
         {
@@ -97,13 +105,16 @@ public class MyString
             Lnode = Lnode.next;
         }
     }
+
     public static void Main()
     {
         char[] B = { 's', 'a', 'j' };
         MyString L = new MyString(B);
+        Console.WriteLine("\nThe Linked List is: ");
         L.Print();
-        L.Reverse();
+        //Remove node
         L.Remove('a');
-        L.Equals((L));
+        Console.WriteLine("\nRemove 'a': ");
+        L.Print();
     }
 }
