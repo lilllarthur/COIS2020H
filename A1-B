@@ -1,131 +1,133 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace COIS2020_PART_B
+public class MyString
 {
-    internal class Program
+    private class Node
     {
-        public class MyString
+        public char item;
+        public Node next;
+        // Constructor (2 marks)
+        public Node(char Item, Node next)
         {
-            private class Node
-            {
-                public char item;
-                public Node next;
-                // Constructor (2 marks)
-                public Node(char Item, Node next)
-                {
-                    this.item = Item;
-                    this.next = next;
-                }
-            }
-            private Node back;
-            private Node front; // Reference to the first (header) node
-            private int length; // Number of characters in MyString
+            this.item = Item;
+            this.next = next;
+        }
+    }
 
-            // Initialize with a header node an instance of MyString to the given character array A (4 marks)
-            public MyString(char[] A)
-            {
-                front = new Node(A[0], null); //not really sure ab this
-                length = A.Length;
-                for (int i = 0; i < A.Length; i++)
-                {
-                    front.next = new Node(A[(length - 1) - i], front.next);
-                }
-            }
-            // Using a stack, reverse this instance of MyString (6 marks)
-             public void Reverse() 
-             {
-                 Stack<char> stack = new Stack<char>(); 
-                 Node curr = front; 
-                 while (curr != null)
-                 { 
-                     stack.Push(curr.item); 
-                     curr = curr.next; 
-                 }
-                 curr = front; 
-                 while (curr != null)
-                 { 
-                     curr.item = stack.Pop();
-                     curr = curr.next; 
-                 }
-             }
-            // Return the index of the first occurrence of c in this instance; otherwise -1 (4 marks)
-            public int IndexOf(char c)
-            {
-                for (int i = 0; i < length; i++)
-                {
-                    if (this.front.next.item == c)
-                    {
-                        return i;
-                    }
-                    this.front = this.front.next;
-                }
-                return -1;
-            }
-            // Remove all occurrences of c from this instance (4 marks)
-            public void Remove(char c)
-            {
-                bool found = false;
-                Node curr = front;
-                while (curr.next != null && !found)
-                {
-                    if (curr.next.item.Equals(c))
-                    {
-                        curr.next = curr.next.next;
-                        if (curr.next == null)
-                            back = curr;
-                        found = true;
-                        length--;
-                    }
-                    else
-                    {
-                        curr = curr.next;
-                    }
-                }
-            }
-            // Return true if obj is both of type MyString and the same as this instance;
-            // otherwise false (6 marks)
-            public override bool Equals(object obj)
-            {
-                if (this.GetType() != obj.GetType())
-                {
-                    return false;
-                }
-                if (obj == null)
-                {
-                    return false;
-                }
-                MyString a = (MyString)obj;
-                if (this.length != a.length)
-                {
-                    return false;
-                }
-                for (int i = 0; i < this.length; i++)
-                {
-                    if (this.front.next.item != a.front.next.item)
-                    {
-                        return false;
-                    }
-                    this.front = this.front.next;
-                    a.front = a.front.next;
-                }
-                return true;
-            }
-            // Print out this instance of MyString (3 marks)
-            public void Print()
-            {
-                Node Lnode = front.next;
-                while (Lnode != null)
-                {
-                    Console.Write(Lnode.item);
-                    Lnode = Lnode.next;
-                }
-            }
+    private Node front; // Reference to the first (header) node
+    private int length; // Number of characters in MyString
+    private Node back;
 
-            public static void Main()
+    //Set to default
+    public MyString()
+    { 
+        front = null;
+        length = 0;
+    }
+
+    // Initialize with a header node an instance of MyString to the given character array A (4 marks)
+    public MyString(char[] A)
+    {
+        front = new Node(A[0], null); //not really sure ab this
+        length = A.Length;
+        for (int i = 0; i < (A.Length-1); i++)
+        {
+            front.next = new Node(A[(length - 1) - i], front.next);
+        }
+    }
+    // Using a stack, reverse this instance of MyString (6 marks)
+    public void Reverse()
+    {
+        Stack<char> S = new Stack<char>(); 
+        Node curr = front;
+        while (curr != null)
+        { 
+            S.Push(curr.item); 
+            curr = curr.next; 
+        }
+        curr = front; 
+        while (curr != null)
+        { 
+            curr.item = S.Pop(); 
+            curr = curr.next; 
+        }
+    }
+    // Return the index of the first occurrence of c in this instance; otherwise -1 (4 marks)
+    public int IndexOf(char c)
+    {
+        for (int i = 0; i < length; i++)
+        {
+            if (this.front.next.item == c)
+            {
+                return i;
+            }
+            this.front = this.front.next;
+        }
+        return -1;
+    }
+    // Remove all occurrences of c from this instance (4 marks)
+    public void Remove(char c)
+    {
+        bool found = false;
+        Node curr = front;
+        while (curr.next != null && !found)
+        {
+            if (curr.next.item.Equals(c))
+            {
+                curr.next = curr.next.next;
+                if (curr.next == null)
+                    back = curr;
+                found = true;
+                length--;
+            }
+            else
+            {
+                curr = curr.next;
+            }
+        }
+    }
+    // Return true if obj is both of type MyString and the same as this instance;
+    // otherwise false (6 marks)
+    public override bool Equals(object obj)
+    {
+        if (this.GetType() != obj.GetType())
+        {
+            return false;
+        }
+        if (obj == null)
+        {
+            return false;
+        }
+        MyString L = (MyString)obj;
+        if (this.length != L.length)
+        {
+            return false;
+        }
+        for (int i = 0; i < this.length; i++)
+        {
+            if (this.front.next.item != L.front.next.item)
+            {
+                return false;
+            }
+            this.front = this.front.next;
+            L.front = L.front.next;
+        }
+        return true;
+    }
+    // Print out this instance of MyString (3 marks)
+    public void Print()
+    { 
+        Node curr = front; 
+        while (curr != null)
+        { 
+            Console.Write(curr.item); 
+            curr = curr.next; 
+        }
+    }
+    public static void Main()
+    {
+        MyString myString = new MyString();
+        {
             {
                 char[] B = { 's', 'a', 'j' };
                 MyString L = new MyString(B);
@@ -137,12 +139,12 @@ namespace COIS2020_PART_B
                 L.Print();
                 //Index
                 //Console.WriteLine("\nReturn Index: ");
-                //L.IndexOf(' ');
+                //L.IndexOf('s');
                 //L.Print();
                 //Remove node
-                //Console.WriteLine("\nRemove 'a': ");
-                //L.Remove('a');
-                //L.Print();                
+                Console.WriteLine("\nRemove 'a': ");
+                L.Remove('a');
+                L.Print();                
             }
         }
     }
