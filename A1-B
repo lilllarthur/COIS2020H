@@ -1,104 +1,149 @@
-public class MyString
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace COIS2020_PART_B
 {
-    private class Node
+    internal class Program
     {
-        public char item;
-        public Node next;
-        // Constructor (2 marks)
-        public Node(char Item, Node Next)
+        public class MyString
         {
-            item = Item;
-            next = Next;
-        }
-    }
-    private Node front; // Reference to the first (header) node
-    private int length; // Number of characters in MyString
+            private class Node
+            {
+                public char item;
+                public Node next;
+                // Constructor (2 marks)
+                public Node(char Item, Node next)
+                {
+                    this.item = Item;
+                    this.next = next;
+                }
+            }
+            private Node back;
+            private Node front; // Reference to the first (header) node
+            private int length; // Number of characters in MyString
 
-    // Initialize with a header node an instance of MyString to the given character array A (4 marks)
-    public MyString(char[] A)
-    {
-        front = new Node(A[0], null);
-        length = A.Length;
-        for (int i = 0; i < A.Length; i++)
-        {
-            front.next = new Node(A[(length - 1) - i], front.next);
-        }
-    }
-    // Using a stack, reverse this instance of MyString (6 marks)
-    //public void Reverse() { Stack<char> S; … }
-    // Return the index of the first occurrence of c in this instance; otherwise -1 (4 marks)
-    public int IndexOf(char c)
-    {
-        for (int i = 0; i < length; i++)
-        {
-            if (this.front.next.item == c)
+            // Initialize with a header node an instance of MyString to the given character array A (4 marks)
+            public MyString(char[] A)
             {
-                return i;
+                front = new Node(A[0], null); //not really sure ab this
+                length = A.Length;
+                for (int i = 0; i < A.Length; i++)
+                {
+                    front.next = new Node(A[(length - 1) - i], front.next);
+                }
             }
-            this.front = this.front.next;
-        }
-        return -1;
-    }
-    // Remove all occurrences of c from this instance (4 marks)
-    public void Remove(char c)
-    {
-        for (int i = 0; i < length; i++)
-        {
-            if (this.front.item == c)
+            // Using a stack, reverse this instance of MyString (6 marks)
+             public void Reverse() 
+             {
+                 Stack<char> stack = new Stack<char>(); 
+                 Node curr = front; 
+                 while (curr != null)
+                 { 
+                     stack.Push(curr.item); 
+                     curr = curr.next; 
+                 }
+                 curr = front; 
+                 while (curr != null)
+                 { 
+                     curr.item = stack.Pop();
+                     curr = curr.next; 
+                 }
+             }
+            // Return the index of the first occurrence of c in this instance; otherwise -1 (4 marks)
+            public int IndexOf(char c)
             {
-                this.front = this.front.next;
-                length--;
+                for (int i = 0; i < length; i++)
+                {
+                    if (this.front.next.item == c)
+                    {
+                        return i;
+                    }
+                    this.front = this.front.next;
+                }
+                return -1;
             }
-        }
-    }
-    // Return true if obj is both of type MyString and the same as this instance;
-    // otherwise false (6 marks)
-    public override bool Equals(object obj)
-    {
-        if (this.GetType() != obj.GetType())
-        {
-            return false;
-        }
-        if (obj == null)
-        {
-            return false;
-        }
-        MyString a = (MyString)obj;
-        if (this.length != a.length)
-        {
-            return false;
-        }
-        for (int i = 0; i < this.length; i++)
-        {
-            if (this.front.next.item != a.front.next.item)
+            // Remove all occurrences of c from this instance (4 marks)
+            public void Remove(char c)
             {
-                return false;
+                bool found = false;
+                Node curr = front;
+                while (curr.next != null && !found)
+                {
+                    if (curr.next.item.Equals(c))
+                    {
+                        curr.next = curr.next.next;
+                        if (curr.next == null)
+                            back = curr;
+                        found = true;
+                        length--;
+                    }
+                    else
+                    {
+                        curr = curr.next;
+                    }
+                }
             }
-            this.front = this.front.next;
-            a.front = a.front.next;
-        }
-        return true;
-    }
-    // Print out this instance of MyString (3 marks)
-    public void Print()
-    { 
-        Node Lnode = front;
-        while (Lnode != null)
-        {
-            Console.Write(Lnode.item);
-            Lnode = Lnode.next;
-        }
-    }
+            // Return true if obj is both of type MyString and the same as this instance;
+            // otherwise false (6 marks)
+            public override bool Equals(object obj)
+            {
+                if (this.GetType() != obj.GetType())
+                {
+                    return false;
+                }
+                if (obj == null)
+                {
+                    return false;
+                }
+                MyString a = (MyString)obj;
+                if (this.length != a.length)
+                {
+                    return false;
+                }
+                for (int i = 0; i < this.length; i++)
+                {
+                    if (this.front.next.item != a.front.next.item)
+                    {
+                        return false;
+                    }
+                    this.front = this.front.next;
+                    a.front = a.front.next;
+                }
+                return true;
+            }
+            // Print out this instance of MyString (3 marks)
+            public void Print()
+            {
+                Node Lnode = front.next;
+                while (Lnode != null)
+                {
+                    Console.Write(Lnode.item);
+                    Lnode = Lnode.next;
+                }
+            }
 
-    public static void Main()
-    {
-        char[] B = { 's', 'a', 'j' };
-        MyString L = new MyString(B);
-        Console.WriteLine("\nThe Linked List is: ");
-        L.Print();
-        //Remove node
-        L.Remove('a');
-        Console.WriteLine("\nRemove 'a': ");
-        L.Print();
+            public static void Main()
+            {
+                char[] B = { 's', 'a', 'j' };
+                MyString L = new MyString(B);
+                Console.WriteLine("\nThe Linked List is: ");
+                L.Print();
+                //Reverse node
+                Console.WriteLine("\nReverse the Linked List: ");
+                L.Reverse();
+                L.Print();
+                //Index
+                //Console.WriteLine("\nReturn Index: ");
+                //L.IndexOf(' ');
+                //L.Print();
+                //Remove node
+                //Console.WriteLine("\nRemove 'a': ");
+                //L.Remove('a');
+                //L.Print();                
+            }
+        }
     }
 }
