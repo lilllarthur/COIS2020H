@@ -18,7 +18,7 @@ public class MyString
     private int length; // Number of characters in MyString
     private Node back;
 
-    //Set to default
+    //Set it to default
     public MyString()
     { 
         front = null;
@@ -131,20 +131,16 @@ public class MyString
             {
                 char[] B = { 's', 'a', 'j' };
                 MyString L = new MyString(B);
-                Console.WriteLine("\nThe Linked List is: ");
+                Console.WriteLine("\nPrint out the string: ");
                 L.Print();
                 //Reverse node
-                Console.WriteLine("\nReverse the Linked List: ");
+                Console.WriteLine("\nReverse the string: ");
                 L.Reverse();
                 L.Print();
-                //Index
-                //Console.WriteLine("\nReturn Index: ");
-                //L.IndexOf('s');
-                //L.Print();
                 //Remove node
                 Console.WriteLine("\nRemove 'a': ");
                 L.Remove('a');
-                L.Print();                
+                L.Print();
             }
         }
     }
