@@ -20,7 +20,7 @@ public class MyString
 
     //Set it to default
     public MyString()
-    { 
+    {
         front = null;
         length = 0;
     }
@@ -30,7 +30,7 @@ public class MyString
     {
         front = new Node(A[0], null); //not really sure ab this
         length = A.Length;
-        for (int i = 0; i < (A.Length-1); i++)
+        for (int i = 0; i < (A.Length - 1); i++)
         {
             front.next = new Node(A[(length - 1) - i], front.next);
         }
@@ -38,18 +38,18 @@ public class MyString
     // Using a stack, reverse this instance of MyString (6 marks)
     public void Reverse()
     {
-        Stack<char> S = new Stack<char>(); 
+        Stack<char> S = new Stack<char>();
         Node curr = front;
         while (curr != null)
-        { 
-            S.Push(curr.item); 
-            curr = curr.next; 
+        {
+            S.Push(curr.item);
+            curr = curr.next;
         }
-        curr = front; 
+        curr = front;
         while (curr != null)
-        { 
-            curr.item = S.Pop(); 
-            curr = curr.next; 
+        {
+            curr.item = S.Pop();
+            curr = curr.next;
         }
     }
     // Return the index of the first occurrence of c in this instance; otherwise -1 (4 marks)
@@ -116,32 +116,61 @@ public class MyString
     }
     // Print out this instance of MyString (3 marks)
     public void Print()
-    { 
-        Node curr = front; 
+    {
+        Node curr = front;
         while (curr != null)
-        { 
-            Console.Write(curr.item); 
-            curr = curr.next; 
+        {
+            Console.Write(curr.item);
+            curr = curr.next;
         }
     }
     public static void Main()
     {
-        MyString myString = new MyString();
+        MyString L = new MyString();
+        do
         {
+            Console.Write("Enter your string: ");
+            string s = Console.ReadLine();
+            char[] items = s.ToCharArray();
+            L = new MyString(items);
+            L.Print();
+            Console.WriteLine();
+            Console.WriteLine("1. Remove one character from the string");
+            Console.WriteLine("2. Reverse the string");
+            Console.WriteLine("3. Exit");
+            Console.Write("Enter your choice: ");
+            string input = Console.ReadLine();
+            char firstChar = input[0];
+            bool isNum = Char.IsDigit(firstChar);
+            if (!isNum)
             {
-                char[] B = { 's', 'a', 'j' };
-                MyString L = new MyString(B);
-                Console.WriteLine("\nPrint out the string: ");
-                L.Print();
-                //Reverse node
-                Console.WriteLine("\nReverse the string: ");
-                L.Reverse();
-                L.Print();
-                //Remove node
-                Console.WriteLine("\nRemove 'a': ");
-                L.Remove('a');
-                L.Print();
+                Console.WriteLine("Error! You have to enter an integer");
             }
-        }
+            else
+            {
+                int num = Int32.Parse(input);
+                //Remove a char
+                if (num == 1)
+                {
+                    Console.Write("Enter the character you want to remove: ");
+                    char r = Convert.ToChar(Console.ReadLine());
+                    L.Remove(r);
+                    L.Print();
+                    Console.WriteLine();
+                }
+                //Reverse the string
+                else if (num == 2)
+                {
+                    L.Reverse();
+                    L.Print();
+                    Console.WriteLine();
+                }
+                //Exit
+                else if (num == 3)
+                {
+                    break;
+                }
+            }
+        } while (true);
     }
 }
