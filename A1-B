@@ -28,7 +28,7 @@ public class MyString
     // Initialize with a header node an instance of MyString to the given character array A (4 marks)
     public MyString(char[] A)
     {
-        front = new Node(A[0], null); //not really sure ab this
+        front = new Node(A[0], null);
         length = A.Length;
         for (int i = 0; i < (A.Length - 1); i++)
         {
@@ -55,16 +55,18 @@ public class MyString
     // Return the index of the first occurrence of c in this instance; otherwise -1 (4 marks)
     public int IndexOf(char c)
     {
+        Node curr = front;
         for (int i = 0; i < length; i++)
         {
-            if (this.front.next.item == c)
+            if (curr.item.Equals(c))
             {
                 return i;
             }
-            this.front = this.front.next;
+            curr = curr.next;
         }
         return -1;
     }
+
     // Remove all occurrences of c from this instance (4 marks)
     public void Remove(char c)
     {
@@ -137,14 +139,16 @@ public class MyString
             Console.WriteLine();
             Console.WriteLine("1. Remove one character from the string");
             Console.WriteLine("2. Reverse the string");
-            Console.WriteLine("3. Exit");
+            Console.WriteLine("3. Return the index of a character");
+            Console.WriteLine("4. Check if obj is both of type MyString and the same as this instance");
+            Console.WriteLine("5. Exit");
             Console.Write("Enter your choice: ");
             string input = Console.ReadLine();
             char firstChar = input[0];
             bool isNum = Char.IsDigit(firstChar);
             if (!isNum)
             {
-                Console.WriteLine("Error! You have to enter an integer");
+                Console.WriteLine("Error! You have to enter a number");
             }
             else
             {
@@ -164,6 +168,23 @@ public class MyString
                     L.Reverse();
                     L.Print();
                     Console.WriteLine();
+                }
+                //Return the index
+                else if (num == 3)
+                {
+                    Console.Write("Enter a character you want to print the index of: ");
+                    char i = Convert.ToChar(Console.ReadLine());
+                    Console.WriteLine("The index of the first occurrence of the letter " + i + " is: " + L.IndexOf(i));
+                }
+                // Check type
+                else if (num == 4)
+                {
+                    Console.Write("Enter string 1: ");
+                    string s1 = Console.ReadLine();
+                    Console.Write("Enter string 2: ");
+                    string s2 = Console.ReadLine();
+                    Console.WriteLine(L.Equals(s1));
+                    Console.WriteLine(L.Equals(s2));
                 }
                 //Exit
                 else if (num == 3)
