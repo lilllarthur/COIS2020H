@@ -1,0 +1,428 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Ass2A
+{
+    public class Point 
+    {
+        private int x, y;
+
+        public Point(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+
+        public int getX()
+        {
+            return x;
+        }
+
+        public int getY()
+        {
+            return y;
+        }
+
+        public void setX(int x)
+        {
+            this.x = x;
+        }
+
+        public void setY(int y)
+        {
+            this.y = y;
+        }
+        public String toString()
+        {
+            return "(" + x + "," + y + ")";
+        }
+
+        public override bool Equals(object obj)
+        {
+            Point other = (Point)obj;
+            return this.x == other.x && this.y == other.y;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.x.GetHashCode() ^ this.y.GetHashCode();
+        }
+
+        public int CompareTo(Point obj)
+        {
+            if (x == obj.x)
+            {
+                if(y == obj.y)
+                {
+                    return 0;
+                }
+                else if ( y > obj.y)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            else if (x > obj.x)
+            {
+                return 1;
+            }
+            return -1;
+        }
+            
+    }
+
+    /* public bool Equals(Point other)
+    {
+        if (ReferenceEquals(null, other))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, other))
+        {
+            return true;
+        }
+
+        return Equals(other.x, x) && Equals(other.y, y);
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != typeof(Point))
+        {
+            return false;
+        }
+
+        return Equals((Point)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            return ((x != null ? x.GetHashCode() : 0) * 397) ^ (x != null ? x.GetHashCode() : 0);
+        }
+    }
+
+    public static bool operator ==(Point left, Point right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(Point left, Point right)
+    {
+        return !Equals(left, right);
+    } */
+
+
+    /* public override int GetHashCode()
+     {
+         return x.GetHashCode() ^ y.GetHashCode();
+     }
+
+     public override bool Equals(object obj)
+     {
+         Point other = (Point)obj;
+         if(this.x == other.x && this.y == other.y)
+         {
+             return true;
+         }
+         return false;
+     } */
+}
+
+    public interface IHashTable<Point, TValue>
+    {
+        void Insert(Point key, TValue value);   
+        bool Remove(Point key);                
+        TValue Retrieve(Point key);
+    }
+
+    public class HashTable<Point, TValue> : IHashTable<Point, TValue>
+    {
+        private class Node
+        {
+            public Point key;
+            public TValue value;
+            public Node next;
+            public Node(Point key, TValue value, Node next = null)
+            {
+                this.key = key;
+                this.value = value;
+                this.next = next;
+            }
+        }
+
+        private Node[] HT;                
+        private int buckets;           //Number of buckets
+        private int items;            //Number of items
+
+        public HashTable()
+        {
+            buckets = 1;
+            HT = new Node[buckets];
+            MakeEmpty();
+        }
+
+        // MakeEmpty
+        // Sets all buckets to empty
+
+        public void MakeEmpty()
+        {
+            int i;
+            for (i = 0; i < buckets; i++)
+                HT[i] = null;
+            items = 0;
+        }
+
+        // NextPrime
+        // Returns the next prime number > k
+
+        private int NextPrime(int k)
+        {
+            int i;
+            bool prime = false;
+
+            // Begin at an odd number
+            if (k == 1 || k == 2)
+                return k + 1;
+
+            if (k % 2 == 0) k++;
+
+            while (!prime)
+            {
+                // Divide k by odd factors
+                for (i = 3; i * i < k && k % i != 0; i += 2) ;
+
+                if (k % i != 0)
+                    prime = true;
+                else
+                    // Increase k to the next odd number
+                    k += 2;
+            }
+            return k;
+        }
+
+        // Rehash
+        // Doubles the size of the hash table to the next highest prime number
+        // Rehashes the items from the original hash table
+
+        private void Rehash()
+        {
+            int i, k;
+            int temp = buckets;       // Store the old number of buckets and
+            Node[] tempHT = HT;          // hash table array
+
+            // Determine the capacity of the new hash table
+            buckets = NextPrime(2 * buckets);
+
+            // Create the new hash table array and initialize each bucket to empty
+            HT = new Node[buckets];
+            MakeEmpty();
+
+            // Rehash items from the old to new hash table
+            for (i = 0; i < temp; i++)
+            {
+                Node p = tempHT[i];
+                while (p != null)
+                {
+                    k = p.key.GetHashCode() % buckets;
+                    HT[k] = new Node(p.key, p.value, HT[k]);
+                    items++;
+                    p = p.next;
+                }
+            }
+        }
+
+        // Insert
+        // Insert a <key,value> into the current hash table
+        // If the key is already found, an exception is thrown
+
+        public void Insert(Point key, TValue value)
+        {
+            int i = key.GetHashCode() % buckets;
+            Node p = HT[i];
+
+            while (p != null)
+            {
+                // Unsuccessful insert (key found already)
+                if (p.key.Equals(key))
+                    throw new InvalidOperationException("Duplicate key");
+                else
+                    p = p.next;
+            }
+
+            // Successful insert
+            // Place item at the head of the list
+            HT[i] = new Node(key, value, HT[i]);
+            items++;
+
+            // Rehash if the average size of the buckets exceeds 5.0
+            if ((double)items / buckets > 5.0)
+                Rehash();
+        }
+
+        // Remove
+        // Delete (if found) the <key,value> with the given key
+        // Return true if successful, false otherwise
+
+        public bool Remove(Point key)
+        {
+            int i = key.GetHashCode() % buckets;
+            Node p = HT[i];
+
+            if (p == null)
+                return false;
+            else
+            // Successful remove of the first item in a bucket
+            if (p.key.Equals(key))
+            {
+                HT[i] = HT[i].next;
+                items--;
+                return true;
+            }
+            else
+                while (p.next != null)
+                {
+                    // Successful remove (<key,value> found and deleted)
+                    if (p.next.key.Equals(key))
+                    {
+                        p.next = p.next.next;
+                        items--;
+                        return true;
+                    }
+                    else
+                        p = p.next;
+                }
+
+            // Unsuccessful remove (key not found)
+            return false;
+        }
+
+        // Retrieve
+        // Returns (if found) the value of the given key
+        // If the key is not found, an exception is thrown
+
+        public TValue Retrieve(Point key)
+        {
+            int i = key.GetHashCode() % buckets;
+            Node p = HT[i];
+
+            while (p != null)
+            {
+                // Successful retrieval (value found and returned)
+                if (p.key.Equals(key))
+                    return p.value;
+                else
+                    p = p.next;
+            }
+            throw new InvalidOperationException("Key not found");
+        }
+
+    //Output
+     /*{
+         List<Point> obj = new List<Point>();
+         obj.Sort((a, b) => a.Point.x.CompareTo(b.x));
+     } */
+    public Object[] Output()
+    {
+        List<Object> list = new List<object>();
+
+        for (int i = 0; i < HT.Length; i++)
+        {
+            Node current = HT[i];
+
+            while (current != null)
+            {
+                list.Add(current.value);
+                current = current.next;
+            }
+        }
+
+        return list.ToArray();
+    }
+
+    // Print
+    // Prints the hash table entries, one line per bucket
+
+    public void Print()
+        {
+            int i;
+            Node p;
+
+            for (i = 0; i < buckets; i++)
+            {
+                Console.Write(i.ToString().PadLeft(2) + ": ");
+
+                p = HT[i];
+                while (p != null)
+                {
+                    Console.Write("<" + p.key.ToString() + "," + p.value.ToString() + "> ");
+                    p = p.next;
+                }
+                Console.WriteLine();
+            }
+        }
+
+    }
+
+    //---------------------------------------------------------------------------------------
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+        HashTable<int, int> H = new HashTable<int, int>();
+        Console.WriteLine("Executing Open Hash Table bf sorting: ");
+        Console.WriteLine();
+
+        for (int i = 0; i < 100; i++)
+            H.Insert(i, i);
+        H.Print();
+
+        Console.WriteLine("\n After sort: ");
+        for (int i = 0; i < 100; i++)
+            H.Output();
+        H.Print();
+
+
+
+
+        /*HashTable<int, int> H = new HashTable<int, int>();
+
+        Console.WriteLine("Executing Open Hash Table");
+        Console.WriteLine();
+
+        for (int i = 0; i < 100; i++)
+            H.Insert(i, i);
+
+        H.Print();
+
+        for (int i = 0; i < 100; i += 2)
+            H.Remove(i);
+
+        H.Print();
+
+        Console.ReadKey();
+
+    Console.WriteLine("Output: ");*/
+    }
+}
+
+
