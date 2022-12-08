@@ -1,0 +1,136 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Ass3
+{
+    public class FileSystem
+    {
+        private class Node
+        {
+            public string directory { get; set; }
+            public List<string> file { get; set; }
+            public Node leftMostChild { get; set; }
+            public Node rightSibling { get; set; }
+
+            public Node(string Directory, List<string> File, Node LeftMostChild, Node RightSibling)
+            {
+                directory = Directory;
+                file = File;
+                leftMostChild = LeftMostChild;
+                rightSibling = RightSibling;
+            }
+            public Node(string Directory)
+            {
+                Directory = directory;
+                file = new List<string>();
+                leftMostChild = null;
+                rightSibling = null;
+            }
+        }
+        private Node root;
+        int num = 0;
+        // Creates a file system with a root directory where the name of the root directory is “/”.
+        public FileSystem()
+        {
+            root = new Node("/");
+        }
+
+        // Adds a file at the given address
+        // Returns false if the file already exists at that address or the path is undefined; true otherwise
+        public bool AddFile(string address)
+        {
+            Node curr = Move (address, root);
+            if (curr.directory == address)
+            {
+                Console.Write("Enter the file name: ");
+                curr.file.Add(Console.ReadLine());
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        // Removes the file at the given address
+        // Returns false if the file is not found at that address or the path is undefined; true otherwise
+        public bool RemoveFile(string address) { }
+
+        // Adds a directory at the given address
+        // Returns false if the directory already exists or the path is undefined; true otherwise
+        public bool AddDirectory(string address)
+        {
+            Node curr = Move(address, root);
+            if (curr.directory == address)
+            {
+                if (curr.leftMostChild== null)
+                {
+                    Console.Write("Enter the name of the directory: ");
+                    curr.leftMostChild= new Node(curr.directory + Console.ReadLine());
+                }
+                else
+                {
+                    Node temp = curr.leftMostChild;
+                    while (temp != null)
+                    {
+                        temp = temp.rightSibling;
+                    }
+                    Console.Write("Enter the name of the directory: ");
+                    temp.rightSibling = new Node (curr.directory + Console.ReadLine()); 
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        // Removes the directory (and its subdirectories) at the given address
+        // Returns false if the directory is not found or the path is undefined; true otherwise
+        public bool RemoveDirectory(string address)
+        {
+
+        }
+
+        // Returns the number of files in the file system (Do not add a count as a data member)
+        public int NumberFiles()
+        {
+
+        }
+
+        // Prints the directories in a pre-order fashion along with their files
+        public void PrintFileSystem()
+        {
+            
+        }
+
+        Node Move (string address, Node curr)
+        {
+            if (curr == null)
+            {
+                return curr;
+            }
+            if (address == curr.directory)
+            {
+                return curr;
+            }
+            else
+            {
+                if (curr.rightSibling != null)
+                {
+                    curr = Move(address, curr.rightSibling);
+                }
+                if (curr.leftMostChild != null)
+                {
+                    curr = Move(address, curr.leftMostChild);
+                }
+                return curr;
+            }
+        }
+
+    }
+}
